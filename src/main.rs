@@ -36,11 +36,31 @@ struct Person {
     birthday: Birthday,
 }
 
+impl Person {
+    pub fn new(name: String, birthday: Birthday) -> Person {
+        Person {
+            name,
+            birthday,
+        }
+    }
+}
+
 struct Birthday {
     month: u8,
     day: u8,
     year: u32,
 }
+
+impl Birthday {
+    pub fn new(month: u8, day: u8, year: u32) -> Birthday {
+        Birthday {
+            month,
+            day,
+            year,
+        }
+    }
+}
+
 
 #[poise::command(slash_command)]
 async fn birthday(
@@ -49,9 +69,9 @@ async fn birthday(
     #[description = "Day"] day: u8,
     #[description = "Year"] year: u32,
 ) -> Result<(), Error> {
-    let birthday: Birthday = Birthday { month, day, year };
+    let birthday: Birthday = Birthday::new(month, day, year);
     let name: String = ctx.author().to_string();
-    let person: Person = Person { name, birthday };
+    let person: Person = Person::new(name, birthday);
     let response = format!("Hey {}! Your birthday is saved as {}/{}/{}!", person.name, person.birthday.month, person.birthday.day, person.birthday.year);
     ctx.reply(response).await?;
     Ok(())
