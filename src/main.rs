@@ -30,3 +30,29 @@ async fn main() {
         .await;
     client.unwrap().start().await.unwrap();
 }
+
+struct Person {
+    name: String,
+    birthday: Birthday,
+}
+
+struct Birthday {
+    month: u8,
+    day: u8,
+    year: u32,
+}
+
+#[poise::command(slash_command)]
+async fn birthday(
+    ctx: Context<'_>,
+    #[description = "Month"] month: u8,
+    #[description = "Day"] day: u8,
+    #[description = "Year"] year: u32,
+) -> Result<(), Error> {
+    let birthday: Birthday = Birthday { month, day, year };
+    let name: String = ctx.author().to_string();
+    let person: Person = Person { name, birthday };
+    let response = format!("Hey {}! Your birthday is saved as {}/{}/{}!", person.name, person.birthday.month, person.birthday.day, person.birthday.year);
+    ctx.reply(response).await?;
+    Ok(())
+}
